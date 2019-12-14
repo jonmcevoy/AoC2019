@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AdventOfCode2019
 {
@@ -58,6 +60,43 @@ namespace AdventOfCode2019
                     }
                 }
                 Console.WriteLine($"D2P1: {opCodes[0]}");
+            }
+
+            {
+                var rawOpCodes = File.ReadAllText("input/2.txt");
+                var opCodesSource = rawOpCodes.Split(",").Select(s => Int32.Parse(s)).ToList();
+
+                Parallel.ForEach(Enumerable.Range(0, 99), (int noun) =>
+                {
+                    Parallel.ForEach(Enumerable.Range(0, 99), (int verb) =>
+                    {
+                        List<int> opCodes = new List<int>();
+                        opCodes.AddRange(opCodesSource);
+                        
+                        opCodes[1] = noun;
+                        opCodes[2] = verb;
+                        for (int i = 0; opCodes[i] != 99; i += 4)
+                        {
+                            if (opCodes[i] == 1)
+                            {
+                                opCodes[opCodes[i + 3]] = opCodes[opCodes[i + 1]] + opCodes[opCodes[i + 2]];
+                            }
+                            else if (opCodes[i] == 2)
+                            {
+                                opCodes[opCodes[i + 3]] = opCodes[opCodes[i + 1]] * opCodes[opCodes[i + 2]];
+                            }
+                            else if (opCodes[i] != 99)
+                            {
+                                throw new Exception("");
+                            }
+                        }
+
+                        if (opCodes[0] == 19690720)
+                        {
+                            Console.WriteLine($"D2P2: {100 * noun + verb}");
+                        }
+                    });
+                });
             }
         }
     }
