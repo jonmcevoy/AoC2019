@@ -98,6 +98,18 @@ namespace AdventOfCode2019
                     });
                 });
             }
+
+            {
+                var paths = File.ReadAllText("input/3.txt");
+                var wires = paths.Split(new String[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Split(",").ToList()).ToList();
+                if (wires.Count() != 2)
+                {
+                    throw new Exception();
+                }
+
+                var d = new Day3(wires[0], wires[1]);
+                d.FindClosestIntersection();
+            }
         }
     }
 }
