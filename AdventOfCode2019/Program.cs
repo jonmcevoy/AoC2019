@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AdventOfCode2019
@@ -110,6 +111,84 @@ namespace AdventOfCode2019
                 var d = new Day3(wires[0], wires[1]);
                 d.FindClosestIntersection();
                 d.FindLeastSteps();
+            }
+
+            {
+                int count = 0;
+                Parallel.For(246540, 787419, p =>
+                {
+                    var password = Convert.ToString(p);
+                    if (password.Length != 6)
+                        throw new Exception();
+
+                    bool bSuccess = false;
+                    for (int i = 1; i < 6; ++i)
+                    {
+                        if (password[i] == password[i-1])
+                        {
+                            bSuccess = true;
+                        }
+                        else if (password[i] < password[i-1])
+                        {
+                            bSuccess = false;
+                            break;
+                        }
+                    }
+
+                    if (bSuccess)
+                    {
+                        Interlocked.Increment(ref count);
+                    }
+                });
+
+                Console.WriteLine($"D4P1: {count}");
+            }
+
+            {
+                int count = 0;
+                Parallel.For(246540, 787419, p =>
+                {
+                    var password = Convert.ToString(p);
+                    if (password.Length != 6)
+                        throw new Exception();
+
+                    bool bIncrement = true;
+                    bool bPair = false;
+                    int pairCount = 1;
+                    for (int i = 1; i < 6; ++i)
+                    {
+                        if (password[i] < password[i - 1])
+                        {
+                            bIncrement = false;
+                            break;
+                        }
+
+                        if (password[i] == password[i - 1])
+                        {
+                            ++pairCount;
+                        }
+                        else
+                        {
+                            if (pairCount == 2)
+                            {
+                                bPair = true;
+                            }
+                            pairCount = 1;
+                        }
+                    }
+
+                    if (pairCount == 2)
+                    {
+                        bPair = true;
+                    }
+
+                    if (bPair && bIncrement)
+                    {
+                        Interlocked.Increment(ref count);
+                    }
+                });
+
+                Console.WriteLine($"D4P2: {count}");
             }
         }
     }
