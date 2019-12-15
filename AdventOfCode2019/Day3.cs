@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace AdventOfCode2019
         private readonly List<string> _path1;
         private readonly List<string> _path2;
 
-        private Dictionary<int, bool> _board1;
-        private Dictionary<int, bool> _board2;
+        private Dictionary<int, int> _board1;
+        private Dictionary<int, int> _board2;
 
         private Point _start = new Point(0, 0);
         private Point _min = new Point(0, 0);
@@ -72,11 +73,14 @@ namespace AdventOfCode2019
             });
         }
 
-        private void ProcessPath(List<string> path, out Dictionary<int, bool> outBoard)
+        private void ProcessPath(List<string> path, out Dictionary<int, int> outBoard)
         {
             var cursor = new Point(_start.X, _start.Y);
-            var board = new Dictionary<int, bool>();
+            var board = new Dictionary<int, int>();
             int width = _max.X - _min.X;
+            int totalDistance = 0;
+
+            board.TryAdd(cursor.X + cursor.Y * width, 0);
 
             path.ForEach(c =>
             {
@@ -104,19 +108,22 @@ namespace AdventOfCode2019
                     if (cursor.X < 0 || cursor.Y < 0)
                         throw new Exception();
 
-                    board.TryAdd(cursor.X + cursor.Y * width, true);
+                    totalDistance += 1;
+                    board.TryAdd(cursor.X + cursor.Y * width, totalDistance);
                 }
             });
 
             outBoard = board;
         }
 
-        public int FindClosestIntersection()
+        public void FindClosestIntersection()
         {
             int maxDistance = _max.X - _min.X + _max.Y - _min.Y;
             Console.WriteLine($"MaxDistance: {maxDistance}");
             int width = _max.X - _min.X;
-            Parallel.For(0, maxDistance, (int distance, ParallelLoopState state) =>
+
+            var results = new ConcurrentBag<int>();
+            Parallel.For(1, maxDistance, (int distance, ParallelLoopState state) =>
             {
                 if (state.ShouldExitCurrentIteration && state.LowestBreakIteration < distance)
                 {
@@ -132,9 +139,9 @@ namespace AdventOfCode2019
                             continue;
 
                         int spot = (x + _start.X) + (y * sign + _start.Y) * width;
-                        if (_board1.GetValueOrDefault(spot, false) && _board2.GetValueOrDefault(spot, false))
+                        if (_board1.GetValueOrDefault(spot, -1) >= 0 && _board2.GetValueOrDefault(spot, -1) >=0)
                         {
-                            Console.WriteLine($"Found: {distance}");
+                            results.Add(distance);
                             state.Break();
                             break;
                         }
@@ -147,7 +154,12 @@ namespace AdventOfCode2019
                 }
             });
 
-            return 0;
+            Console.WriteLine($"D3P1: {results.Min()}");
+        }
+
+        public void FindLeastSteps()
+        {
+
         }
     }
 }
