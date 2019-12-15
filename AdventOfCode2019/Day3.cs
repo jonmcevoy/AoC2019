@@ -159,6 +159,45 @@ namespace AdventOfCode2019
 
         public void FindLeastSteps()
         {
+            var cursor = new Point(_start.X, _start.Y);
+            int width = _max.X - _min.X;
+
+            var intersectionSteps = new List<int>();
+
+            _path1.ForEach(c =>
+            {
+                int distance = int.Parse(c.Substring(1));
+                for (int i = 0; i < distance; ++i)
+                {
+                    switch (c[0])
+                    {
+                        case 'L':
+                            cursor.X -= 1;
+                            break;
+                        case 'R':
+                            cursor.X += 1;
+                            break;
+                        case 'D':
+                            cursor.Y -= 1;
+                            break;
+                        case 'U':
+                            cursor.Y += 1;
+                            break;
+                        default:
+                            throw new Exception();
+                    }
+
+                    if (cursor.X < 0 || cursor.Y < 0)
+                        throw new Exception();
+
+                    if (_board2.TryGetValue(cursor.X + cursor.Y * width, out int otherSteps))
+                    {
+                        intersectionSteps.Add(otherSteps + _board1[cursor.X + cursor.Y * width]);
+                    }
+                }
+            });
+
+            Console.WriteLine($"D3P2: {intersectionSteps.Min()}");
 
         }
     }

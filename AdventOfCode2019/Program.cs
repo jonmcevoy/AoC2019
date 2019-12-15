@@ -109,6 +109,7 @@ namespace AdventOfCode2019
 
                 var d = new Day3(wires[0], wires[1]);
                 d.FindClosestIntersection();
+                d.FindLeastSteps();
             }
         }
     }
