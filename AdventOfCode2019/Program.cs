@@ -190,6 +190,13 @@ namespace AdventOfCode2019
 
                 Console.WriteLine($"D4P2: {count}");
             }
+
+            {
+                var paths = File.ReadAllText("input/5.txt");
+                var d = new Day5(paths.Split(",").Select(i => int.Parse(i)).ToList());
+                int output = d.Execute();
+                Console.WriteLine($"D5P1: {output}");
+            }
         }
     }
 }
