@@ -57,24 +57,28 @@ namespace AdventOfCode2019
             {
                 int instruction = executionStorage[ip] % 100;
                 int modes = executionStorage[ip] / 100;
+                int destination = -1;
                 switch (instruction)
                 {
                     case 1:
                         CheckWrite(modes, 3);
                         CheckOutput(output);
-                        executionStorage[executionStorage[ip + 3]] = GetParameter(executionStorage, modes, ip, 1) + GetParameter(executionStorage, modes, ip, 2);
+                        destination = executionStorage[ip + 3];
+                        executionStorage[destination] = GetParameter(executionStorage, modes, ip, 1) + GetParameter(executionStorage, modes, ip, 2);
                         ip += 4;
                         break;
                     case 2:
                         CheckWrite(modes, 3);
                         CheckOutput(output);
-                        executionStorage[executionStorage[ip + 3]] = GetParameter(executionStorage, modes, ip, 1) + GetParameter(executionStorage, modes, ip, 2);
+                        destination = executionStorage[ip + 3];
+                        executionStorage[destination] = GetParameter(executionStorage, modes, ip, 1) * GetParameter(executionStorage, modes, ip, 2);
                         ip += 4;
                         break;
                     case 3:
                         CheckWrite(modes, 1);
                         CheckOutput(output);
-                        executionStorage[executionStorage[ip + 1]] = input;
+                        destination = executionStorage[ip + 1];
+                        executionStorage[destination] = input;
                         ip += 2;
                         break;
                     case 4:
