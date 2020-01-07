@@ -193,8 +193,15 @@ namespace AdventOfCode2019
 
             {
                 var paths = File.ReadAllText("input/5.txt");
-                var d = new Day5(paths.Split(",").Select(i => int.Parse(i)).ToList());
+                var d = new Day5Part1(paths.Split(",").Select(i => int.Parse(i)).ToList());
                 int output = d.Execute();
+                Console.WriteLine($"D5P1: {output}");
+            }
+
+            {
+                var paths = File.ReadAllText("input/5.txt");
+                var d = new IntcodeComputer(paths.Split(",").Select(i => int.Parse(i)).ToList());
+                int output = d.Execute(5);
                 Console.WriteLine($"D5P1: {output}");
             }
         }
